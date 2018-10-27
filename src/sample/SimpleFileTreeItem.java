@@ -61,7 +61,7 @@ public class SimpleFileTreeItem extends TreeItem<File> {
     public boolean isLeaf() {
         if (isFirstTimeLeaf) {
             isFirstTimeLeaf = false;
-            File f = (File) getValue();
+            File f = getValue();
             isLeaf = f.isFile();
         }
 
@@ -88,7 +88,9 @@ public class SimpleFileTreeItem extends TreeItem<File> {
                         .observableArrayList();
 
                 for (File childFile : files) {
-                    children.add(new SimpleFileTreeItem(childFile));
+                    if (childFile.isDirectory()){
+                        children.add(new SimpleFileTreeItem(childFile));
+                    }
                 }
 
                 return children;
