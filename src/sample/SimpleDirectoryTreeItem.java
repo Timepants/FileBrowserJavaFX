@@ -19,7 +19,7 @@ import javafx.scene.control.TreeItem;
  *         during runtime the whole tree would have to be rebuild. Event
  *         handling is not provided in this implementation.
  */
-public class SimpleFileTreeItem extends TreeItem<File> {
+public class SimpleDirectoryTreeItem extends TreeItem<File> {
 
     /**
      * Calling the constructor of super class in oder to create a new
@@ -29,7 +29,7 @@ public class SimpleFileTreeItem extends TreeItem<File> {
      *            an object of type File from which a tree should be build or
      *            which children should be gotten.
      */
-    public SimpleFileTreeItem(File f) {
+    public SimpleDirectoryTreeItem(File f) {
         super(f);
     }
 
@@ -86,10 +86,10 @@ public class SimpleFileTreeItem extends TreeItem<File> {
             if (files != null) {
                 ObservableList<TreeItem<File>> children = FXCollections
                         .observableArrayList();
-
+                //TODO make it so hidden files is changable
                 for (File childFile : files) {
-                    if (childFile.isDirectory()){
-                        children.add(new SimpleFileTreeItem(childFile));
+                    if (childFile.isDirectory() && !childFile.isHidden()){
+                        children.add(new SimpleDirectoryTreeItem(new SimpleFile(childFile)));
                     }
                 }
 

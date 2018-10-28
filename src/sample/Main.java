@@ -17,20 +17,6 @@ import javafx.util.Duration;
 
 public class Main extends Application {
 
-//    @Override
-//    public void start(Stage primaryStage) throws Exception{
-//        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-//        primaryStage.setTitle("Beans");
-////        primaryStage.setScene(new Scene(root, 300, 275));
-//        primaryStage.setScene(new Scene(root));
-//        primaryStage.show();
-//    }
-//
-//
-//    public static void main(String[] args) {
-//        launch(args);
-//    }
-
     @Override public void start(final Stage stage) throws Exception {
         // load the scene fxml UI.
         // grabs the UI scenegraph view from the loader.
