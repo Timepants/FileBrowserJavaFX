@@ -29,6 +29,8 @@ public class Main extends Application {
 //        FXMLLoader loader = new FXMLLoader(getClass().getResource("src/main/java/sample/sample.fxml"));
         System.out.println(loader.getLocation());
         Parent root = loader.load();
+        Controller controller = loader.getController();
+        controller.setGetHostController(getHostServices());
 //        final Controller controller = loader.<Controller>getController();
 
         // continuously refresh the TreeItems.
