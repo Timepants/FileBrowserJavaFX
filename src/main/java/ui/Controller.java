@@ -1,4 +1,4 @@
-package sample;
+package ui;
 
 import javafx.application.HostServices;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -8,26 +8,23 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.TilePane;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
+import ui.components.FXDialogue;
+import util.MD5Checksum;
 
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -45,7 +42,7 @@ public class Controller {
     private ListView listView;
     @FXML
     private TableView<File> tableView;
-    private File imageFile = new File("src/main/java/sample/resources/file.png");
+    private File imageFile = new File("src/main/java/ui/resources/file.png");
     private Image imageDecline = new Image(imageFile.toURI().toString());
     public void initialize(){
         changeTree(System.getProperty("user.home"));
@@ -63,8 +60,6 @@ public class Controller {
             root.setExpanded(true);
             directoryTextBar.setText(path);
             treeView.setRoot(root);
-            updateTiledPane(root);
-            updateListView(root);
             updateTableView(root);
         }
         //TODO add else
@@ -73,59 +68,11 @@ public class Controller {
         directoryTextBar.setText(item.getValue().getPath());
         item.setExpanded(true);
         treeView.setRoot(item);
-        updateTiledPane(item);
-        updateListView(item);
         updateTableView(item);
-    }
-    private void updateTiledPane(TreeItem<File> item){
-
-        tilePane.getChildren().clear();
-        List<File> files = new ArrayList();
-        for (File child : item.getValue().listFiles()){
-            files.add(child);
-        }
-        files.sort((Comparator<File>) (o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase()));
-        for (File child : files){
-            //TODO hidden files
-            if(child.isFile() && !child.isHidden()){
-                Button button = new Button(child.getName(), new ImageView(imageDecline));
-                button.addEventHandler(ActionEvent.ACTION, getButtonAndOpenFile());
-//                button.setWrapText(true);
-                button.setMaxWidth(150);
-                button.setMinWidth(150);
-                tilePane.getChildren().add(button);
-
-            }
-        }
-
-    }
-
-    private void updateListView(TreeItem<File> item){
-        listView.getItems().clear();
-
-        for (File child : item.getValue().listFiles()){
-            //TODO hidden files
-            if(child.isFile() && !child.isHidden()){
-                Button button = new Button(child.getName(), new ImageView(imageDecline));
-                button.addEventHandler(ActionEvent.ACTION, getButtonAndOpenFile());
-                listView.getItems().add(button);
-            }
-        }
-        listView.getItems().sort((Comparator<Button>) (o1, o2) -> o1.getText().toLowerCase().compareTo(o2.getText().toLowerCase()));
     }
 
     private void updateTableView(TreeItem<File> item){
         tableView.getItems().clear();
-//        System.out.println(tableView.getColumns());
-//        for (File child : item.getValue().listFiles()){
-//            //TODO hidden files
-//            if(child.isFile() && !child.isHidden()){
-//                Button button = new Button(child.getName(), new ImageView(imageDecline));
-//                button.addEventHandler(ActionEvent.ACTION, getButtonAndOpenFile());
-//                tableView.edit(0, (TableColumn) tableView.getColumns().get(0));
-//            }
-//        }
-//        tableView.getItems().sort((Comparator<Button>) (o1, o2) -> o1.getText().toLowerCase().compareTo(o2.getText().toLowerCase()));
         List<File> files = new ArrayList();
         for (File child : item.getValue().listFiles()){
             if(child.isFile() && !child.isHidden()) {
@@ -160,9 +107,6 @@ public class Controller {
                 return new ReadOnlyObjectWrapper<>(String.valueOf(p.getValue().lastModified()));
             }
         });
-//
-//        TableColumn<File,String> lastNameCol = new TableColumn<File,String>("Last Name");
-//        lastNameCol.setCellValueFactory(new PropertyValueFactory("lastName"));
 
         tableView.getColumns().setAll(fileNameCol, fileSizeCol, fileModDateCol);
     }
@@ -185,45 +129,15 @@ public class Controller {
             }
         }
         if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-            System.out.println("herewego");
-            //TODO move this
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.initStyle(StageStyle.UTILITY);
-            alert.setTitle("MD5 Checksum");
-            alert.setHeaderText("Checksum for " +tableView.getSelectionModel().getSelectedItem().getName());
-
-            //TODO move this as well
-            MessageDigest md = null;
             try {
-                md = MessageDigest.getInstance("MD5");
+                FXDialogue.showInformation("MD5 Checksum"
+                        ,"Checksum for " + tableView.getSelectionModel().getSelectedItem().getName()
+                        , MD5Checksum.getCheckSum(tableView.getSelectionModel().getSelectedItem()));
+            } catch (IOException e) {
+                e.printStackTrace();
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(tableView.getSelectionModel().getSelectedItem());
-                //Create byte array to read data in chunks
-                byte[] byteArray = new byte[1024];
-                int bytesCount = 0;
-
-                //Read file data and update in message digest
-                while ((bytesCount = fis.read(byteArray)) != -1) {
-                    md.update(byteArray, 0, bytesCount);
-                };
-
-                //close the stream; We don't need it now.
-                fis.close();
-                byte[] digest = md.digest();
-                alert.setContentText(bytesToHex(digest));
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            alert.showAndWait();
         }
 
     }
@@ -239,20 +153,10 @@ public class Controller {
         }
 
     }
-    public void test(){
-//        System.out.println(System.getProperty("user.dir"));
-//        System.out.println(System.getProperty("user.home"));
-//        System.out.println(treeView.getRoot().getChildren());
-        File file = new File(directoryTextBar.getText());
-            System.out.println(file.getName());
-
-        changeTree(directoryTextBar.getText());
-//        File[] roots = File.listRoots();
-//        System.out.println("Root directories in your system are:");
-//
-//        for (int i = 0; i < roots.length; i++) {
-//            System.out.println(roots[i].toString());
-//        }
+    public void moveDirectoryFromBar(KeyEvent key){
+        if(key.getCode().equals(KeyCode.ENTER)){
+            changeTree(directoryTextBar.getText());
+        }
     }
     public void openFile(File file){
 //        hostServices.showDocument(new File("/home/timepants/Downloads/play.png").toURI().toString());
@@ -266,6 +170,7 @@ public class Controller {
                 e.printStackTrace();
             }
         }
+        //TODO try this on windows
 //        try {
 //            Desktop.getDesktop().edit(new File("/home/timepants/Downloads/play.png"));
 //
@@ -285,6 +190,8 @@ public class Controller {
     {
         this.hostServices = hostServices;
     }
+
+    //this is to make the buttons go
     private EventHandler<ActionEvent> getButtonAndOpenFile(){
        return new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
@@ -295,15 +202,41 @@ public class Controller {
         };
     }
 
-//TODO move this
-    private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
-    public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+    //TODO not used
+    private void updateTiledPane(TreeItem<File> item){
+
+        tilePane.getChildren().clear();
+        List<File> files = new ArrayList();
+        for (File child : item.getValue().listFiles()){
+            files.add(child);
         }
-        return new String(hexChars);
+        files.sort((Comparator<File>) (o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase()));
+        for (File child : files){
+            if(child.isFile() && !child.isHidden()){
+                Button button = new Button(child.getName(), new ImageView(imageDecline));
+                button.addEventHandler(ActionEvent.ACTION, getButtonAndOpenFile());
+//                button.setWrapText(true);
+                button.setMaxWidth(150);
+                button.setMinWidth(150);
+                tilePane.getChildren().add(button);
+
+            }
+        }
+
     }
+
+    private void updateListView(TreeItem<File> item){
+        listView.getItems().clear();
+
+        for (File child : item.getValue().listFiles()){
+            //TODO hidden files
+            if(child.isFile() && !child.isHidden()){
+                Button button = new Button(child.getName(), new ImageView(imageDecline));
+                button.addEventHandler(ActionEvent.ACTION, getButtonAndOpenFile());
+                listView.getItems().add(button);
+            }
+        }
+        listView.getItems().sort((Comparator<Button>) (o1, o2) -> o1.getText().toLowerCase().compareTo(o2.getText().toLowerCase()));
+    }
+
 }

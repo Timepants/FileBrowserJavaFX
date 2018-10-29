@@ -1,4 +1,4 @@
-package sample;
+package ui;
 
 import java.io.File;
 import java.net.URI;
