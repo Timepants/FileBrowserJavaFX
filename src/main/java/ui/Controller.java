@@ -191,18 +191,9 @@ public class Controller {
         this.hostServices = hostServices;
     }
 
-    //this is to make the buttons go
-    private EventHandler<ActionEvent> getButtonAndOpenFile(){
-       return new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                Button button = (Button) e.getSource();
-                System.out.println(button.getText());
-                openFile(treeView.getRoot().getValue().getAbsolutePath() + "/" + button.getText());
-            }
-        };
-    }
 
-    //TODO not used
+
+    //TODO ------------------------------ not used ------------------------------------------
     private void updateTiledPane(TreeItem<File> item){
 
         tilePane.getChildren().clear();
@@ -238,5 +229,14 @@ public class Controller {
         }
         listView.getItems().sort((Comparator<Button>) (o1, o2) -> o1.getText().toLowerCase().compareTo(o2.getText().toLowerCase()));
     }
-
+    //this is to make the buttons go
+    private EventHandler<ActionEvent> getButtonAndOpenFile(){
+        return new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                Button button = (Button) e.getSource();
+                System.out.println(button.getText());
+                openFile(treeView.getRoot().getValue().getAbsolutePath() + "/" + button.getText());
+            }
+        };
+    }
 }
