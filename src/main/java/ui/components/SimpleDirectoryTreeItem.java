@@ -1,9 +1,11 @@
-package ui;
+package ui.components;
 import java.io.File;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  * @author Alexander Bolte - Bolte Consulting (2010 - 2014).
@@ -33,6 +35,11 @@ public class SimpleDirectoryTreeItem extends TreeItem<File> {
         super(f);
     }
 
+    public SimpleDirectoryTreeItem(File f, Image image) {
+        super(f, new ImageView(image));
+        this.image = image;
+    }
+    private Image image = null;
     /*
      * (non-Javadoc)
      *
@@ -63,9 +70,11 @@ public class SimpleDirectoryTreeItem extends TreeItem<File> {
             isFirstTimeLeaf = false;
             File f = getValue();
             isLeaf = f.isFile();
+            return isLeaf;
+//            isLeaf = getChildren().isEmpty();
         }
-
-        return isLeaf;
+        return getChildren().isEmpty();
+//        return isLeaf;
     }
 
     /**
@@ -89,7 +98,7 @@ public class SimpleDirectoryTreeItem extends TreeItem<File> {
                 //TODO make it so hidden files is changable
                 for (File childFile : files) {
                     if (childFile.isDirectory() && !childFile.isHidden()){
-                        children.add(new SimpleDirectoryTreeItem(new SimpleFile(childFile)));
+                        children.add(new SimpleDirectoryTreeItem(new SimpleFile(childFile),image));
                     }
                 }
 

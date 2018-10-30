@@ -17,29 +17,43 @@ public class ContextMenuMaker {
         // Create ContextMenu
         ContextMenu contextMenu = new ContextMenu();
 
-        MenuItem item1 = new MenuItem("Rename");
-        item1.setOnAction(new EventHandler<ActionEvent>() {
+        MenuItem rename = new MenuItem("Rename");
+        rename.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
                 Runnable runnableTask = () -> {
-                    System.out.println("rename " + file.getName());
                     File newFile = ContextMenuHandler.renameFile(file);
-                    System.out.println("newName " + newFile.getAbsolutePath());
                     refreshTableView(newFile.getParentFile(), tableView);
                 };
                 Platform.runLater(runnableTask);
             }
         });
-        MenuItem item2 = new MenuItem("Delete");
-        item2.setOnAction(new EventHandler<ActionEvent>() {
+        MenuItem newFile = new MenuItem("New File");
+        newFile.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("delete " + file.getName());
+                Runnable runnableTask = () -> {
+                    ContextMenuHandler.newFile(file);
+                    refreshTableView(file.getParentFile(), tableView);
+                };
+                Platform.runLater(runnableTask);
             }
         });
-        MenuItem item3 = new MenuItem("Checksum");
-        item3.setOnAction(new EventHandler<ActionEvent>() {
+        MenuItem deleteMenuItem = new MenuItem("Delete");
+        deleteMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Runnable runnableTask = () -> {
+                    File parent = file.getParentFile();
+                    ContextMenuHandler.deleteFile(file);
+                    refreshTableView(parent, tableView);
+                };
+                Platform.runLater(runnableTask);
+            }
+        });
+        MenuItem checksumMenuItem = new MenuItem("Checksum");
+        checksumMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 ContextMenuHandler.showMD5Checksum(file);
@@ -47,8 +61,8 @@ public class ContextMenuMaker {
         });
 
         // Add MenuItem to ContextMenu
-        contextMenu.getItems().addAll(item1, item2, new SeparatorMenuItem(),item3);
-        
+        contextMenu.getItems().addAll(newFile, rename, deleteMenuItem, new SeparatorMenuItem(),checksumMenuItem);
+
         return contextMenu;
     }
 

@@ -1,0 +1,10 @@
+/*.tree-cell .tree-disclosure-node .arrow {*/
+    /*-fx-shape: null;*/
+    /*-fx-background-color: null;*/
+    /*-fx-background-image: url("../img/test.png");*/
+/*}*/
+/*.tree-cell:expanded .tree-disclosure-node .arrow {*/
+    /*-fx-shape: null;*/
+    /*-fx-background-color: null;*/
+    /*-fx-background-image: url("../img/open_folder.png");*/
+/*}*/

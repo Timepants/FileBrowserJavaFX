@@ -1,7 +1,6 @@
 ui/Controller.class
 ui/components/ContextMenuMaker$3.class
 ui/components/FXDialogue.class
-ui/SimpleFile.class
 ui/components/ContextMenuMaker$2.class
 ui/components/TableViewHandler$3.class
 ui/components/ContextMenuMaker.class
@@ -11,6 +10,8 @@ ui/components/TableViewHandler$2.class
 ui/components/TableViewHandler.class
 ui/components/ContextMenuMaker$1.class
 ui/components/TableViewHandler$1.class
+ui/components/SimpleFile.class
 ui/components/ContextMenuHandler.class
+ui/components/SimpleDirectoryTreeItem.class
+ui/components/ContextMenuMaker$4.class
 ui/HelloFX.class
-ui/SimpleDirectoryTreeItem.class

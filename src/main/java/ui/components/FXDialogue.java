@@ -101,11 +101,11 @@ public class FXDialogue {
     public static final String OK = "OK";
     public static final String CANCEL = "Cancel";
 
-    public static String showConfirm(String title, String message, String... options) {
+    public static String showConfirm(String title, String header, String message, String... options) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.initStyle(StageStyle.UTILITY);
-        alert.setTitle("Choose an option");
-        alert.setHeaderText(title);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
         alert.setContentText(message);
 
         //To make enter key press the actual focused button, not the first one. Just like pressing "space".
