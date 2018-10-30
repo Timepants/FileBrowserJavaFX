@@ -48,17 +48,7 @@ public class ContextMenuMaker {
 
         // Add MenuItem to ContextMenu
         contextMenu.getItems().addAll(item1, item2, new SeparatorMenuItem(),item3);
-
-
-//        // When user right-click on Circle
-//        circle.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
-//
-//            @Override
-//            public void handle(ContextMenuEvent event) {
-//
-//                contextMenu.show(circle, event.getScreenX(), event.getScreenY());
-//            }
-//        });
+        
         return contextMenu;
     }
 
