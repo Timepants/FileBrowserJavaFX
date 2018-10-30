@@ -1,5 +1,6 @@
 package ui.components;
 
+import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -13,6 +14,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.*;
 
 public class FXDialogue {
     public static void showInformation(String header, String message) {
@@ -20,66 +22,78 @@ public class FXDialogue {
     }
 
     public static void showInformation(String title, String header, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(message);
+        Runnable runnableTask = () -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle(title);
+            alert.setHeaderText(header);
+            alert.setContentText(message);
 
-        alert.showAndWait();
+            alert.showAndWait();
+        };
+        Platform.runLater(runnableTask);
     }
 
     public static void showWarning(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.setTitle("Warning");
-        alert.setHeaderText(title);
-        alert.setContentText(message);
+        Runnable runnableTask = () -> {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Warning");
+            alert.setHeaderText(title);
+            alert.setContentText(message);
 
-        alert.showAndWait();
+            alert.showAndWait();
+        };
+        Platform.runLater(runnableTask);
     }
 
     public static void showError(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.setTitle("Error");
-        alert.setHeaderText(title);
-        alert.setContentText(message);
+        Runnable runnableTask = () -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Error");
+            alert.setHeaderText(title);
+            alert.setContentText(message);
 
-        alert.showAndWait();
+            alert.showAndWait();
+        };
+        Platform.runLater(runnableTask);
     }
 
     public static void showException(String title, String message, Exception exception) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.setTitle("Exception");
-        alert.setHeaderText(title);
-        alert.setContentText(message);
+        Runnable runnableTask = () -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Exception");
+            alert.setHeaderText(title);
+            alert.setContentText(message);
 
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        exception.printStackTrace(pw);
-        String exceptionText = sw.toString();
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            exception.printStackTrace(pw);
+            String exceptionText = sw.toString();
 
-        Label label = new Label("Details:");
+            Label label = new Label("Details:");
 
-        TextArea textArea = new TextArea(exceptionText);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
+            TextArea textArea = new TextArea(exceptionText);
+            textArea.setEditable(false);
+            textArea.setWrapText(true);
 
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);
-        GridPane.setVgrow(textArea, Priority.ALWAYS);
-        GridPane.setHgrow(textArea, Priority.ALWAYS);
+            textArea.setMaxWidth(Double.MAX_VALUE);
+            textArea.setMaxHeight(Double.MAX_VALUE);
+            GridPane.setVgrow(textArea, Priority.ALWAYS);
+            GridPane.setHgrow(textArea, Priority.ALWAYS);
 
-        GridPane expContent = new GridPane();
-        expContent.setMaxWidth(Double.MAX_VALUE);
-        expContent.add(label, 0, 0);
-        expContent.add(textArea, 0, 1);
+            GridPane expContent = new GridPane();
+            expContent.setMaxWidth(Double.MAX_VALUE);
+            expContent.add(label, 0, 0);
+            expContent.add(textArea, 0, 1);
 
-        alert.getDialogPane().setExpandableContent(expContent);
+            alert.getDialogPane().setExpandableContent(expContent);
 
-        alert.showAndWait();
+            alert.showAndWait();
+        };
+        Platform.runLater(runnableTask);
     }
 
     public static final String YES = "Yes";
@@ -127,11 +141,14 @@ public class FXDialogue {
         }
     }
 
-    public static String showTextInput(String title, String message, String defaultValue) {
+    public static String showTextInput(String header, String message, String defaultValue) {
+        return showTextInput("Input", header, message, defaultValue);
+    }
+    public static String showTextInput(String title, String header, String message, String defaultValue) {
         TextInputDialog dialog = new TextInputDialog(defaultValue);
         dialog.initStyle(StageStyle.UTILITY);
-        dialog.setTitle("Input");
-        dialog.setHeaderText(title);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
         dialog.setContentText(message);
 
         Optional<String> result = dialog.showAndWait();
@@ -140,6 +157,5 @@ public class FXDialogue {
         } else {
             return null;
         }
-
     }
 }

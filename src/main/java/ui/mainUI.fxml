@@ -23,7 +23,7 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="550.0" prefWidth="190.0">
                <children>
-                  <TableView fx:id="tableView" layoutX="185.0" layoutY="54.0" onMouseClicked="#fileDoubleClicked" prefHeight="200.0" prefWidth="320.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TableView fx:id="tableView" layoutX="185.0" layoutY="54.0" onContextMenuRequested="#test" onMouseClicked="#fileDoubleClicked" prefHeight="200.0" prefWidth="320.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
                       <TableColumn prefWidth="75.0" text="Name" />
                       <TableColumn prefWidth="75.0" text="Size" />
@@ -33,7 +33,7 @@
         </items>
       </SplitPane>
       <TextField layoutX="550.0" layoutY="20.0" prefHeight="25.0" prefWidth="176.0" AnchorPane.rightAnchor="94.0" AnchorPane.topAnchor="20.0" />
-      <Button layoutX="849.0" layoutY="20.0" mnemonicParsing="false" text="Search" AnchorPane.rightAnchor="19.0" AnchorPane.topAnchor="20.0" />
+      <Button layoutX="849.0" layoutY="20.0" mnemonicParsing="false" onContextMenuRequested="#test" text="Search" AnchorPane.rightAnchor="19.0" AnchorPane.topAnchor="20.0" />
       <!--<TilePane fx:id="tilePane" layoutX="259.0" layoutY="639.0" prefHeight="133.0" prefWidth="213.0" AnchorPane.bottomAnchor="56.0" AnchorPane.leftAnchor="259.0" AnchorPane.rightAnchor="459.0" AnchorPane.topAnchor="639.0" />-->
       <!--<ListView fx:id="listView" layoutX="500.0" layoutY="633.0" prefHeight="164.0" prefWidth="413.0" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="633.0" />-->
    </children>

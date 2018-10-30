@@ -13,17 +13,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.TilePane;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
+import ui.components.ContextMenuMaker;
 import ui.components.FXDialogue;
 import util.MD5Checksum;
 
 
+import java.awt.*;
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -31,15 +30,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static ui.components.TableViewHandler.refreshTableView;
+
 public class Controller {
+    private ContextMenu contextMenu = null;
     @FXML
     private TreeView<File> treeView;
     @FXML
     private TextField directoryTextBar;
-    @FXML
-    private TilePane tilePane;
-    @FXML
-    private ListView listView;
     @FXML
     private TableView<File> tableView;
     private File imageFile = new File("src/main/java/ui/resources/file.png");
@@ -72,43 +70,7 @@ public class Controller {
     }
 
     private void updateTableView(TreeItem<File> item){
-        tableView.getItems().clear();
-        List<File> files = new ArrayList();
-        for (File child : item.getValue().listFiles()){
-            if(child.isFile() && !child.isHidden()) {
-                files.add(child);
-            }
-        }
-        files.sort((Comparator<File>) (o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase()));
-
-        ObservableList<File> allFiles = FXCollections.observableList(files);
-        tableView.setItems(allFiles);
-
-        TableColumn<File,String> fileNameCol = new TableColumn<File,String>("File Name");
-        fileNameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<File, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<File, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyObjectWrapper<>(p.getValue().getName());
-            }
-        });
-
-        TableColumn<File,String> fileSizeCol = new TableColumn<File,String>("File Size");
-        fileSizeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<File, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<File, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyObjectWrapper<>(String.valueOf(p.getValue().length()));
-            }
-        });
-
-        TableColumn<File,String> fileModDateCol = new TableColumn<File,String>("Date Modified");
-        fileModDateCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<File, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<File, String> p) {
-                // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyObjectWrapper<>(String.valueOf(p.getValue().lastModified()));
-            }
-        });
-
-        tableView.getColumns().setAll(fileNameCol, fileSizeCol, fileModDateCol);
+        refreshTableView(item, tableView);
     }
     public void directoryDoubleClicked(MouseEvent mouseEvent){
 //        System.out.println(mouseEvent.getButton());
@@ -123,22 +85,12 @@ public class Controller {
     public void fileDoubleClicked(MouseEvent mouseEvent){
         System.out.println(mouseEvent.getButton());
         if (tableView.getSelectionModel().getSelectedItem() != null){
-        if(mouseEvent.getClickCount() == 2)
-            {
-                openFile(tableView.getSelectionModel().getSelectedItem());
+            if(mouseEvent.getClickCount() == 2)
+                {
+                    openFile(tableView.getSelectionModel().getSelectedItem());
+                }
             }
-        }
-        if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-            try {
-                FXDialogue.showInformation("MD5 Checksum"
-                        ,"Checksum for " + tableView.getSelectionModel().getSelectedItem().getName()
-                        , MD5Checksum.getCheckSum(tableView.getSelectionModel().getSelectedItem()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-        }
+
 
     }
     public void changeTreeToParentOfCurrent(){
@@ -169,74 +121,37 @@ public class Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            //TODO try this on windows
+            try {
+                Desktop.getDesktop().open(file);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        //TODO try this on windows
-//        try {
-//            Desktop.getDesktop().edit(new File("/home/timepants/Downloads/play.png"));
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
     public void openFile(String path){
         openFile(new File(path));
     }
-    public void openFile(){
-        //to shut up test button
+
+    public void test(ContextMenuEvent event){
+        if(contextMenu != null){
+            contextMenu.hide();
+        }
+
+
+        File item = tableView.getSelectionModel().getSelectedItem();
+        if (item != null) {
+            contextMenu = ContextMenuMaker.getFileMenu(item, tableView);
+            contextMenu.show(tableView, event.getScreenX(), event.getScreenY());
+        }
     }
+
     HostServices hostServices ;
 
     public void setGetHostController(HostServices hostServices)
     {
         this.hostServices = hostServices;
-    }
-
-
-
-    //TODO ------------------------------ not used ------------------------------------------
-    private void updateTiledPane(TreeItem<File> item){
-
-        tilePane.getChildren().clear();
-        List<File> files = new ArrayList();
-        for (File child : item.getValue().listFiles()){
-            files.add(child);
-        }
-        files.sort((Comparator<File>) (o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase()));
-        for (File child : files){
-            if(child.isFile() && !child.isHidden()){
-                Button button = new Button(child.getName(), new ImageView(imageDecline));
-                button.addEventHandler(ActionEvent.ACTION, getButtonAndOpenFile());
-//                button.setWrapText(true);
-                button.setMaxWidth(150);
-                button.setMinWidth(150);
-                tilePane.getChildren().add(button);
-
-            }
-        }
-
-    }
-
-    private void updateListView(TreeItem<File> item){
-        listView.getItems().clear();
-
-        for (File child : item.getValue().listFiles()){
-            //TODO hidden files
-            if(child.isFile() && !child.isHidden()){
-                Button button = new Button(child.getName(), new ImageView(imageDecline));
-                button.addEventHandler(ActionEvent.ACTION, getButtonAndOpenFile());
-                listView.getItems().add(button);
-            }
-        }
-        listView.getItems().sort((Comparator<Button>) (o1, o2) -> o1.getText().toLowerCase().compareTo(o2.getText().toLowerCase()));
-    }
-    //this is to make the buttons go
-    private EventHandler<ActionEvent> getButtonAndOpenFile(){
-        return new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                Button button = (Button) e.getSource();
-                System.out.println(button.getText());
-                openFile(treeView.getRoot().getValue().getAbsolutePath() + "/" + button.getText());
-            }
-        };
     }
 }
