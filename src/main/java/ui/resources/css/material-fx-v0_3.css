@@ -233,42 +233,42 @@
  * CheckBox                                                                    *
  *                                                                             *
  ******************************************************************************/
-.check-box {
-	-fx-padding: 10;
-}
+/*.check-box {*/
+	/*-fx-padding: 10;*/
+/*}*/
 
-.check-box .text {
-	-fx-fill: -fx-text-base-color;
-}
+/*.check-box .text {*/
+	/*-fx-fill: -fx-text-base-color;*/
+/*}*/
 
-.check-box>.box, .check-box>.box.unfocused, .check-box:disabled>.box,
-	.check-box:indeterminate>.box {
-	-fx-border-radius: 4.0;
-	-fx-border-color: -swatch-grey;
-	-fx-border-width: 2;
-	-fx-background-radius: 4;
-	-fx-background-color: transparent;
-	-fx-padding: 1;
-}
+/*.check-box>.box, .check-box>.box.unfocused, .check-box:disabled>.box,*/
+	/*.check-box:indeterminate>.box {*/
+	/*-fx-border-radius: 4.0;*/
+	/*-fx-border-color: -swatch-grey;*/
+	/*-fx-border-width: 2;*/
+	/*-fx-background-radius: 4;*/
+	/*-fx-background-color: transparent;*/
+	/*-fx-padding: 1;*/
+/*}*/
 
-.check-box:selected>.box {
-	-fx-border-color: -swatch-500;
-	-fx-background-color: -swatch-500;
-}
+/*.check-box:selected>.box {*/
+	/*-fx-border-color: -swatch-500;*/
+	/*-fx-background-color: -swatch-500;*/
+/*}*/
 
-.check-box:focused>.box {
-	-fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.30), 6.0, 0.3, 0,
-		0);
-}
+/*.check-box:focused>.box {*/
+	/*-fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.30), 6.0, 0.3, 0,*/
+		/*0);*/
+/*}*/
 
-.check-box:selected>.box>.mark {
-	-fx-background-color: white;
-}
+/*.check-box:selected>.box>.mark {*/
+	/*-fx-background-color: white;*/
+/*}*/
 
-.check-box:indeterminate>.box>.mark {
-	-fx-background-color: -swatch-grey;
-	-fx-padding: 0.45em;
-}
+/*.check-box:indeterminate>.box>.mark {*/
+	/*-fx-background-color: -swatch-grey;*/
+	/*-fx-padding: 0.45em;*/
+/*}*/
 
 /*******************************************************************************
  *                                                                             *

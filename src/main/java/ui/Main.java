@@ -18,6 +18,7 @@ public class Main extends Application {
 //        scene.getStylesheets().add("yourname.css");
 
         stage.setScene(new Scene(root));
+        stage.setTitle("Bowser Browser");
         stage.setMinWidth(660);
 //        stage.initStyle(StageStyle.TRANSPARENT);
 //        stage.getIcons().add(new Image(getClass().getResourceAsStream("myIcon.png")));

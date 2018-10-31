@@ -27,6 +27,11 @@ public class Controller {
     private TextField directoryTextBar;
     @FXML
     private TableView<File> tableView;
+    @FXML
+    private CheckBox hiddenItemsCheckbox;
+
+    private boolean showHidden = false;
+
     private Image folder = new Image( new File("src/main/java/ui/resources/img/open_folder.png").toURI().toString());
     public void initialize(){
         changeTree(System.getProperty("user.home"));
@@ -42,7 +47,7 @@ public class Controller {
         System.out.println(folder.getUrl());
         File file = new SimpleFile(path);
         if (file.exists()) {
-            SimpleDirectoryTreeItem root = new SimpleDirectoryTreeItem(file,folder);
+            SimpleDirectoryTreeItem root = new SimpleDirectoryTreeItem(file,folder,showHidden);
             root.setExpanded(true);
             directoryTextBar.setText(path);
             treeView.setRoot(root);
@@ -58,7 +63,7 @@ public class Controller {
     }
 
     private void updateTableView(TreeItem<File> item){
-        refreshTableView(item, tableView);
+        refreshTableView(item, tableView, showHidden);
     }
     public void directoryDoubleClicked(MouseEvent mouseEvent){
         clickAnywhere(mouseEvent);
@@ -69,8 +74,16 @@ public class Controller {
                 System.out.println(treeView.getSelectionModel().getSelectedItem());
                 changeTree(treeView.getSelectionModel().getSelectedItem());
             }
+        } else if (mouseEvent.getClickCount() == 1){
+            if (treeView.getSelectionModel().getSelectedItem() != null){
+
+                treeView.getSelectionModel().getSelectedItem().setExpanded(
+                        !treeView.getSelectionModel().getSelectedItem().isExpanded());
+            }
         }
-        treeView.getSelectionModel().clearSelection();
+        if(mouseEvent.getButton()!=MouseButton.SECONDARY){
+                    treeView.getSelectionModel().clearSelection();
+        }
 
     }
     public void fileDoubleClicked(MouseEvent mouseEvent){
@@ -81,7 +94,9 @@ public class Controller {
                 openFile(tableView.getSelectionModel().getSelectedItem());
             }
         }
-        tableView.getSelectionModel().clearSelection();
+        if(mouseEvent.getButton()!=MouseButton.SECONDARY){
+            tableView.getSelectionModel().clearSelection();
+        }
 
     }
     public void changeTreeToParentOfCurrent(){
@@ -142,11 +157,11 @@ public class Controller {
 
         File item = tableView.getSelectionModel().getSelectedItem();
         if (item != null) {
-            contextMenu = ContextMenuMaker.getFileMenu(item, tableView);
+            contextMenu = ContextMenuMaker.getFileMenu(item, tableView, showHidden);
             contextMenu.show(tableView, event.getScreenX(), event.getScreenY());
         } else {
             File currentDirectory = treeView.getRoot().getValue();
-            contextMenu = ContextMenuMaker.getTableViewMenu(currentDirectory, tableView);
+            contextMenu = ContextMenuMaker.getTableViewMenu(currentDirectory, tableView, showHidden);
             contextMenu.show(tableView, event.getScreenX(), event.getScreenY());
         }
     }
@@ -157,16 +172,16 @@ public class Controller {
         }
         TreeItem<File> item = treeView.getSelectionModel().getSelectedItem();
         if (item != null) {
-            contextMenu = ContextMenuMaker.getDirectoryMenu(item.getValue(), tableView);
+            contextMenu = ContextMenuMaker.getDirectoryMenu(item.getValue(), treeView, showHidden);
             contextMenu.show(treeView, event.getScreenX(), event.getScreenY());
         } else {
             File currentDirectory = treeView.getRoot().getValue();
-            contextMenu = ContextMenuMaker.getTreeViewMenu(currentDirectory, tableView);
+            contextMenu = ContextMenuMaker.getTreeViewMenu(currentDirectory, treeView, showHidden);
             contextMenu.show(treeView, event.getScreenX(), event.getScreenY());
         }
     }
     public void clickAnywhere(MouseEvent mouseEvent){
-        if(contextMenu.isShowing()&&mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+        if(contextMenu!=null &&contextMenu.isShowing()&&mouseEvent.getButton().equals(MouseButton.PRIMARY)){
             contextMenu.hide();
         }
     }
@@ -176,5 +191,14 @@ public class Controller {
     public void setGetHostController(HostServices hostServices)
     {
         this.hostServices = hostServices;
+    }
+    public void showHiddenItemsAction(){
+        showHidden = hiddenItemsCheckbox.isSelected();
+        refresh();
+    }
+    public void refresh(){
+        updateTableView(treeView.getRoot());
+        TreeItem<File> item = treeView.getRoot();
+        treeView.setRoot(new SimpleDirectoryTreeItem(item.getValue(), (ImageView) item.getGraphic(), showHidden));
     }
 }

@@ -18,8 +18,8 @@ import java.util.Date;
 import java.util.List;
 
 public class TableViewHandler {
-    public static void refreshTableView(TreeItem<File> item, TableView tableView){
-        refreshTableView(item.getValue(), tableView);
+    public static void refreshTableView(TreeItem<File> item, TableView tableView, boolean showHidden){
+        refreshTableView(item.getValue(), tableView, showHidden);
     }
     public static String dateFormatter(Long pDate) {
       SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
@@ -32,12 +32,12 @@ public class TableViewHandler {
         int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
-    public static void refreshTableView(File item, TableView tableView){
+    public static void refreshTableView(File item, TableView tableView, boolean showHidden){
         tableView.getItems().clear();
         List<File> files = new ArrayList();
         System.out.println(item);
         for (File child : item.listFiles()){
-            if(child.isFile() && !child.isHidden()) {
+            if(child.isFile() && (showHidden || !child.isHidden())) {
                 files.add(child);
             }
         }

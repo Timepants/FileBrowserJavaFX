@@ -3,6 +3,7 @@ import java.io.File;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -35,11 +36,32 @@ public class SimpleDirectoryTreeItem extends TreeItem<File> {
         super(f);
     }
 
-    public SimpleDirectoryTreeItem(File f, Image image) {
+//    public SimpleDirectoryTreeItem(File f, Image image) {
+//        super(f, new ImageView(image));
+//        this.image = image;
+//    }
+    private Image image = null;
+
+//    public SimpleDirectoryTreeItem(File value, ImageView graphic) {
+//        super(value, graphic);
+//        image = graphic.getImage();
+//    }
+
+    public SimpleDirectoryTreeItem(File f, Image image, boolean showHidden) {
         super(f, new ImageView(image));
         this.image = image;
+        this.showHidden=showHidden;
     }
-    private Image image = null;
+    public SimpleDirectoryTreeItem(File value, ImageView graphic, boolean showHidden) {
+        super(value, graphic);
+        image = graphic.getImage();
+        this.showHidden=showHidden;
+    }
+
+    private boolean showHidden = false;
+    public boolean getShowHidden(){
+        return showHidden;
+    }
     /*
      * (non-Javadoc)
      *
@@ -95,10 +117,9 @@ public class SimpleDirectoryTreeItem extends TreeItem<File> {
             if (files != null) {
                 ObservableList<TreeItem<File>> children = FXCollections
                         .observableArrayList();
-                //TODO make it so hidden files is changable
                 for (File childFile : files) {
-                    if (childFile.isDirectory() && !childFile.isHidden()){
-                        children.add(new SimpleDirectoryTreeItem(new SimpleFile(childFile),image));
+                    if (childFile.isDirectory() && (showHidden || !childFile.isHidden())){
+                        children.add(new SimpleDirectoryTreeItem(new SimpleFile(childFile),image,showHidden));
                     }
                 }
 
