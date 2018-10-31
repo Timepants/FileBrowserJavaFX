@@ -10,13 +10,24 @@ import javafx.scene.control.TreeItem;
 import javafx.util.Callback;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class TableViewHandler {
     public static void refreshTableView(TreeItem<File> item, TableView tableView){
         refreshTableView(item.getValue(), tableView);
+    }
+    public static String dateFormatter(Long pDate) {
+      SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        return dateFormat.format(new java.util.Date(pDate));
+
+    }
+    public static String sizeFormatter(Long pSize) {
+
+        return String.format("%,d%n", pSize);
     }
     public static void refreshTableView(File item, TableView tableView){
         tableView.getItems().clear();
@@ -44,7 +55,7 @@ public class TableViewHandler {
         fileSizeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<File, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<File, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyObjectWrapper<>(String.valueOf(p.getValue().length()));
+                return new ReadOnlyObjectWrapper<>(sizeFormatter(p.getValue().length()));
             }
         });
 
@@ -52,7 +63,7 @@ public class TableViewHandler {
         fileModDateCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<File, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<File, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyObjectWrapper<>(String.valueOf(p.getValue().lastModified()));
+                return new ReadOnlyObjectWrapper<>(dateFormatter(p.getValue().lastModified()));
             }
         });
 
