@@ -15,6 +15,7 @@ public class Main extends Application {
         Parent root = loader.load();
         Controller controller = loader.getController();
         controller.setGetHostController(getHostServices());
+//        scene.getStylesheets().add("yourname.css");
 
         stage.setScene(new Scene(root));
         stage.setMinWidth(660);

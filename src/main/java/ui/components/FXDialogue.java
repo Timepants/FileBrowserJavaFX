@@ -9,8 +9,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.robot.Robot;
 import javafx.stage.StageStyle;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,27 @@ public class FXDialogue {
         showInformation("Information", header, message);
     }
 
+    public static void addStyle(Alert alert){
+        DialogPane dialogPane = alert.getDialogPane();
+        try {
+            dialogPane.getStylesheets().add(new File("src/main/java/ui/resources/css/material-fx-v0_3.css").toURI().toURL().toString());
+            dialogPane.getStyleClass().add("material-fx-v0_3");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public static void addStyle(Dialog dialog){
+        DialogPane dialogPane = dialog.getDialogPane();
+        try {
+            dialogPane.getStylesheets().add(new File("src/main/java/ui/resources/css/material-fx-v0_3.css").toURI().toURL().toString());
+            dialogPane.getStyleClass().add("material-fx-v0_3");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void showInformation(String title, String header, String message) {
         Runnable runnableTask = () -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -28,7 +51,7 @@ public class FXDialogue {
             alert.setTitle(title);
             alert.setHeaderText(header);
             alert.setContentText(message);
-
+            addStyle(alert);
             alert.showAndWait();
         };
         Platform.runLater(runnableTask);
@@ -41,7 +64,7 @@ public class FXDialogue {
             alert.setTitle("Warning");
             alert.setHeaderText(title);
             alert.setContentText(message);
-
+            addStyle(alert);
             alert.showAndWait();
         };
         Platform.runLater(runnableTask);
@@ -54,7 +77,7 @@ public class FXDialogue {
             alert.setTitle("Error");
             alert.setHeaderText(title);
             alert.setContentText(message);
-
+            addStyle(alert);
             alert.showAndWait();
         };
         Platform.runLater(runnableTask);
@@ -90,7 +113,7 @@ public class FXDialogue {
             expContent.add(textArea, 0, 1);
 
             alert.getDialogPane().setExpandableContent(expContent);
-
+            addStyle(alert);
             alert.showAndWait();
         };
         Platform.runLater(runnableTask);
@@ -130,7 +153,7 @@ public class FXDialogue {
         for (String option : options) {
             buttons.add(new ButtonType(option));
         }
-
+        addStyle(alert);
         alert.getButtonTypes().setAll(buttons);
 
         Optional<ButtonType> result = alert.showAndWait();
@@ -150,7 +173,7 @@ public class FXDialogue {
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
-
+        addStyle(dialog);
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             return result.get();

@@ -9,7 +9,7 @@
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="698.0" prefWidth="968.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#clickAnywhere" prefHeight="698.0" prefWidth="968.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.Controller">
    <children>
       <TextField fx:id="directoryTextBar" layoutX="123.0" layoutY="22.0" minWidth="-Infinity" onKeyPressed="#moveDirectoryFromBar" prefHeight="34.0" prefWidth="568.0" AnchorPane.leftAnchor="123.0" AnchorPane.rightAnchor="277.0" AnchorPane.topAnchor="22.0" />
       <Button layoutX="68.0" layoutY="22.0" mnemonicParsing="false" onAction="#changeTreeToParentOfCurrent" text="&lt;" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="22.0" />

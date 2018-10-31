@@ -30,6 +30,7 @@ public class Controller {
     private Image folder = new Image( new File("src/main/java/ui/resources/img/open_folder.png").toURI().toString());
     public void initialize(){
         changeTree(System.getProperty("user.home"));
+
 //        treeView.setCellFactory(new Callback<TreeView<String>,TreeCell<String>>(){
 //            @Override
 //            public TreeCell<File> call(TreeView<File> p) {
@@ -60,6 +61,7 @@ public class Controller {
         refreshTableView(item, tableView);
     }
     public void directoryDoubleClicked(MouseEvent mouseEvent){
+        clickAnywhere(mouseEvent);
 //        System.out.println(mouseEvent.getButton());
         if(mouseEvent.getClickCount() == 2)
         {
@@ -72,7 +74,7 @@ public class Controller {
 
     }
     public void fileDoubleClicked(MouseEvent mouseEvent){
-
+        clickAnywhere(mouseEvent);
         if (tableView.getSelectionModel().getSelectedItem() != null){
         if(mouseEvent.getClickCount() == 2)
             {
@@ -163,7 +165,11 @@ public class Controller {
             contextMenu.show(treeView, event.getScreenX(), event.getScreenY());
         }
     }
-
+    public void clickAnywhere(MouseEvent mouseEvent){
+        if(contextMenu.isShowing()&&mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+            contextMenu.hide();
+        }
+    }
 
     HostServices hostServices ;
 
