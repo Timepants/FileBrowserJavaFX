@@ -14,6 +14,8 @@ import ui.components.SimpleFile;
 
 import java.awt.*;
 import java.io.*;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 import static ui.components.TableViewHandler.refreshTableView;
 
@@ -102,8 +104,12 @@ public class Controller {
         System.out.println(System.getProperty("os.name"));
         if (System.getProperty("os.name").equals("Linux")) {
             try {
-                System.out.println("opening: " + file.getAbsolutePath());
-                Runtime.getRuntime().exec("xdg-open " + file.getAbsolutePath());
+//                String[] command = {"xdg-open", file.getAbsolutePath().replaceAll("\\s+", "\\\\ ")};
+                String[] command = {"xdg-open", file.getAbsolutePath()};
+                ProcessBuilder pb = new ProcessBuilder(command);
+                pb.start();
+                System.out.println("\\command: " + Arrays.toString(command));
+//                Runtime.getRuntime().exec(command);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -130,6 +136,10 @@ public class Controller {
         File item = tableView.getSelectionModel().getSelectedItem();
         if (item != null) {
             contextMenu = ContextMenuMaker.getFileMenu(item, tableView);
+            contextMenu.show(tableView, event.getScreenX(), event.getScreenY());
+        } else {
+            File currentDirectory = treeView.getRoot().getValue();
+            contextMenu = ContextMenuMaker.getTableViewMenu(currentDirectory, tableView);
             contextMenu.show(tableView, event.getScreenX(), event.getScreenY());
         }
     }
