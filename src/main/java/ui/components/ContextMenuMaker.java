@@ -147,4 +147,41 @@ public class ContextMenuMaker {
             }
         };
     }
+
+    public static ContextMenu getDirectoryMenu(File item, TableView<File> tableView) {
+        // Create ContextMenu
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem paste = new MenuItem("Paste");
+        paste.setOnAction(getPasteEvent(item, tableView));
+
+        MenuItem deleteMenuItem = new MenuItem("Delete");
+        deleteMenuItem.setOnAction(getDeleteEvent(item, tableView));
+
+        System.out.println(Clipboard.getSystemClipboard().hasFiles());
+        if (!Clipboard.getSystemClipboard().hasFiles()){
+            paste.setDisable(true);
+        }
+        // Add MenuItem to ContextMenu
+        contextMenu.getItems().addAll(paste, deleteMenuItem);
+
+        return contextMenu;
+    }
+
+    public static ContextMenu getTreeViewMenu(File currentDirectory, TableView<File> tableView) {
+        // Create ContextMenu
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem paste = new MenuItem("Paste");
+        paste.setOnAction(getPasteEvent(currentDirectory, tableView));
+
+        System.out.println(Clipboard.getSystemClipboard().hasFiles());
+        if (!Clipboard.getSystemClipboard().hasFiles()){
+            paste.setDisable(true);
+        }
+        // Add MenuItem to ContextMenu
+        contextMenu.getItems().addAll(paste);
+
+        return contextMenu;
+    }
 }

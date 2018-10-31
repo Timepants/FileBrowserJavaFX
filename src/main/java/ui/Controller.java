@@ -68,17 +68,18 @@ public class Controller {
                 changeTree(treeView.getSelectionModel().getSelectedItem());
             }
         }
+        treeView.getSelectionModel().clearSelection();
 
     }
     public void fileDoubleClicked(MouseEvent mouseEvent){
-        System.out.println(mouseEvent.getButton());
-        if (tableView.getSelectionModel().getSelectedItem() != null){
-            if(mouseEvent.getClickCount() == 2)
-                {
-                    openFile(tableView.getSelectionModel().getSelectedItem());
-                }
-            }
 
+        if (tableView.getSelectionModel().getSelectedItem() != null){
+        if(mouseEvent.getClickCount() == 2)
+            {
+                openFile(tableView.getSelectionModel().getSelectedItem());
+            }
+        }
+        tableView.getSelectionModel().clearSelection();
 
     }
     public void changeTreeToParentOfCurrent(){
@@ -127,7 +128,11 @@ public class Controller {
         openFile(new File(path));
     }
 
-    public void test(ContextMenuEvent event){
+    public void goHome(){
+        changeTree(System.getProperty("user.home"));
+    }
+
+    public void tableViewContextMenu(ContextMenuEvent event){
         if(contextMenu != null){
             contextMenu.hide();
         }
@@ -143,6 +148,22 @@ public class Controller {
             contextMenu.show(tableView, event.getScreenX(), event.getScreenY());
         }
     }
+
+    public void treeViewContextMenu(ContextMenuEvent event){
+        if(contextMenu != null){
+            contextMenu.hide();
+        }
+        TreeItem<File> item = treeView.getSelectionModel().getSelectedItem();
+        if (item != null) {
+            contextMenu = ContextMenuMaker.getDirectoryMenu(item.getValue(), tableView);
+            contextMenu.show(treeView, event.getScreenX(), event.getScreenY());
+        } else {
+            File currentDirectory = treeView.getRoot().getValue();
+            contextMenu = ContextMenuMaker.getTreeViewMenu(currentDirectory, tableView);
+            contextMenu.show(treeView, event.getScreenX(), event.getScreenY());
+        }
+    }
+
 
     HostServices hostServices ;
 
