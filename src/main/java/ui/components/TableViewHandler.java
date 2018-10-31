@@ -10,6 +10,7 @@ import javafx.scene.control.TreeItem;
 import javafx.util.Callback;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -25,9 +26,11 @@ public class TableViewHandler {
         return dateFormat.format(new java.util.Date(pDate));
 
     }
-    public static String sizeFormatter(Long pSize) {
-
-        return String.format("%,d%n", pSize);
+    public static String readableFileSize(long size) {
+        if(size <= 0) return "0";
+        final String[] units = new String[] { "B", "KB", "MB", "GB", "TB" };
+        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
     public static void refreshTableView(File item, TableView tableView){
         tableView.getItems().clear();
@@ -55,7 +58,7 @@ public class TableViewHandler {
         fileSizeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<File, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<File, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
-                return new ReadOnlyObjectWrapper<>(sizeFormatter(p.getValue().length()));
+                return new ReadOnlyObjectWrapper<>(readableFileSize(p.getValue().length()));
             }
         });
 
