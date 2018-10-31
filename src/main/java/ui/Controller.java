@@ -1,34 +1,21 @@
 package ui;
 
 import javafx.application.HostServices;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import javafx.scene.layout.TilePane;
-import javafx.stage.StageStyle;
-import javafx.util.Callback;
 import ui.components.ContextMenuMaker;
-import ui.components.FXDialogue;
-import util.MD5Checksum;
+import ui.components.SimpleDirectoryTreeItem;
+import ui.components.SimpleFile;
 
 
 import java.awt.*;
 import java.io.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 import static ui.components.TableViewHandler.refreshTableView;
 
@@ -40,8 +27,7 @@ public class Controller {
     private TextField directoryTextBar;
     @FXML
     private TableView<File> tableView;
-    private File imageFile = new File("src/main/java/ui/resources/file.png");
-    private Image imageDecline = new Image(imageFile.toURI().toString());
+    private Image folder = new Image( new File("src/main/java/ui/resources/img/open_folder.png").toURI().toString());
     public void initialize(){
         changeTree(System.getProperty("user.home"));
 //        treeView.setCellFactory(new Callback<TreeView<String>,TreeCell<String>>(){
@@ -52,9 +38,10 @@ public class Controller {
 //        });
     }
     private void changeTree(String path){
+        System.out.println(folder.getUrl());
         File file = new SimpleFile(path);
         if (file.exists()) {
-            SimpleDirectoryTreeItem root = new SimpleDirectoryTreeItem(file);
+            SimpleDirectoryTreeItem root = new SimpleDirectoryTreeItem(file,folder);
             root.setExpanded(true);
             directoryTextBar.setText(path);
             treeView.setRoot(root);
@@ -77,6 +64,7 @@ public class Controller {
         if(mouseEvent.getClickCount() == 2)
         {
             if (treeView.getSelectionModel().getSelectedItem() != null){
+                System.out.println(treeView.getSelectionModel().getSelectedItem());
                 changeTree(treeView.getSelectionModel().getSelectedItem());
             }
         }
@@ -116,8 +104,12 @@ public class Controller {
         System.out.println(System.getProperty("os.name"));
         if (System.getProperty("os.name").equals("Linux")) {
             try {
-                System.out.println("opening: " + file.getAbsolutePath());
-                Runtime.getRuntime().exec("xdg-open " + file.getAbsolutePath());
+//                String[] command = {"xdg-open", file.getAbsolutePath().replaceAll("\\s+", "\\\\ ")};
+                String[] command = {"xdg-open", file.getAbsolutePath()};
+                ProcessBuilder pb = new ProcessBuilder(command);
+                pb.start();
+                System.out.println("\\command: " + Arrays.toString(command));
+//                Runtime.getRuntime().exec(command);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -144,6 +136,10 @@ public class Controller {
         File item = tableView.getSelectionModel().getSelectedItem();
         if (item != null) {
             contextMenu = ContextMenuMaker.getFileMenu(item, tableView);
+            contextMenu.show(tableView, event.getScreenX(), event.getScreenY());
+        } else {
+            File currentDirectory = treeView.getRoot().getValue();
+            contextMenu = ContextMenuMaker.getTableViewMenu(currentDirectory, tableView);
             contextMenu.show(tableView, event.getScreenX(), event.getScreenY());
         }
     }

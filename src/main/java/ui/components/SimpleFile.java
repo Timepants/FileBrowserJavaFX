@@ -1,4 +1,4 @@
-package ui;
+package ui.components;
 
 import java.io.File;
 import java.net.URI;
@@ -31,7 +31,7 @@ public class SimpleFile extends File {
 
     @Override
     public String toString() {
-        return"/" +this.getName();
+        return this.getName();
     }
 
 }
