@@ -8,8 +8,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
 import javafx.util.Callback;
+import util.Finder;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,6 +55,51 @@ public class TableViewHandler {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<File, String> p) {
                 // p.getValue() returns the Person instance for a particular TableView row
                 return new ReadOnlyObjectWrapper<>(p.getValue().getName());
+            }
+        });
+
+        TableColumn<File,String> fileSizeCol = new TableColumn<File,String>("File Size");
+        fileSizeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<File, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<File, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                return new ReadOnlyObjectWrapper<>(readableFileSize(p.getValue().length()));
+            }
+        });
+
+        TableColumn<File,String> fileModDateCol = new TableColumn<File,String>("Date Modified");
+        fileModDateCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<File, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<File, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                return new ReadOnlyObjectWrapper<>(dateFormatter(p.getValue().lastModified()));
+            }
+        });
+
+        tableView.getColumns().setAll(fileNameCol, fileSizeCol, fileModDateCol);
+    }
+
+    public static void refreshSearchTableView(File currentDirectory, TableView tableView, String pattern, boolean showHidden){
+        tableView.getItems().clear();
+
+
+        Finder finder = new Finder(pattern, showHidden);
+        try {
+
+            Files.walkFileTree(currentDirectory.toPath(), finder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<File> files = finder.done();
+
+        files.sort((Comparator<File>) (o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase()));
+
+        ObservableList<File> allFiles = FXCollections.observableList(files);
+        tableView.setItems(allFiles);
+        //TODO clean this up
+        TableColumn<File,String> fileNameCol = new TableColumn<File,String>("File Name");
+        fileNameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<File, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<File, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                return new ReadOnlyObjectWrapper<>(p.getValue().getAbsolutePath().replaceFirst(currentDirectory.getAbsolutePath(),""));
             }
         });
 

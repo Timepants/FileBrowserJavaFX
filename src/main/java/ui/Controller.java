@@ -10,14 +10,17 @@ import javafx.scene.input.*;
 import ui.components.ContextMenuMaker;
 import ui.components.SimpleDirectoryTreeItem;
 import ui.components.SimpleFile;
+import util.Finder;
 
 
 import java.awt.*;
 import java.io.*;
-import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import static ui.components.TableViewHandler.refreshTableView;
+import static ui.components.TableViewHandler.refreshSearchTableView;
 
 public class Controller {
     private ContextMenu contextMenu = null;
@@ -25,6 +28,8 @@ public class Controller {
     private TreeView<File> treeView;
     @FXML
     private TextField directoryTextBar;
+    @FXML
+    private TextField searchTxtBox;
     @FXML
     private TableView<File> tableView;
     @FXML
@@ -200,5 +205,14 @@ public class Controller {
         updateTableView(treeView.getRoot());
         TreeItem<File> item = treeView.getRoot();
         treeView.setRoot(new SimpleDirectoryTreeItem(item.getValue(), (ImageView) item.getGraphic(), showHidden));
+    }
+    public void search(){
+        String searchText = searchTxtBox.getText();
+        refreshSearchTableView(treeView.getRoot().getValue(),tableView,searchText,showHidden);
+//        System.out.println(Searcher.search(treeView.getRoot().getValue(), searchText).toString());
+    }
+    public void searchButtonPress(){
+        //Show dialog asking for search type
+        search();
     }
 }
