@@ -96,7 +96,11 @@ public class Controller {
         if (tableView.getSelectionModel().getSelectedItem() != null){
         if(mouseEvent.getClickCount() == 2)
             {
-                openFile(tableView.getSelectionModel().getSelectedItem());
+                if (tableView.getSelectionModel().getSelectedItem().isDirectory()){
+                    changeTree(tableView.getSelectionModel().getSelectedItem().getParentFile().getAbsolutePath());
+                } else {
+                    openFile(tableView.getSelectionModel().getSelectedItem());
+                }
             }
         }
         if(mouseEvent.getButton()!=MouseButton.SECONDARY){
