@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -19,18 +20,18 @@ import java.util.List;
 import static ui.components.TableViewHandler.refreshTableView;
 
 public class ContextMenuMaker {
-    public static ContextMenu getFileMenu(File file, TableView tableView, boolean showHidden) {
+    public static ContextMenu getFileMenu(File file, TableView tableView, boolean showHidden, Image image) {
         // Create ContextMenu
         ContextMenu contextMenu = new ContextMenu();
 
         MenuItem rename = new MenuItem("Rename");
-        rename.setOnAction(getRenameEvent(file, tableView, showHidden));
+        rename.setOnAction(getRenameEvent(file, tableView, showHidden, image));
 
         MenuItem newFile = new MenuItem("New File");
-        newFile.setOnAction(getNewFileEvent(file.getParentFile(), tableView, showHidden));
+        newFile.setOnAction(getNewFileEvent(file.getParentFile(), tableView, showHidden, image));
 
         MenuItem deleteMenuItem = new MenuItem("Delete");
-        deleteMenuItem.setOnAction(getDeleteEvent(file, tableView, showHidden));
+        deleteMenuItem.setOnAction(getDeleteEvent(file, tableView, showHidden, image));
 
         MenuItem checksumMenuItem = new MenuItem("MD5 Checksum");
         checksumMenuItem.setOnAction(getChecksumEvent(file, tableView));
@@ -39,7 +40,7 @@ public class ContextMenuMaker {
         copy.setOnAction(getCopyEvent(file));
 
         MenuItem paste = new MenuItem("Paste");
-        paste.setOnAction(getPasteEvent(file.getParentFile(), tableView, showHidden));
+        paste.setOnAction(getPasteEvent(file.getParentFile(), tableView, showHidden, image));
 
         System.out.println(Clipboard.getSystemClipboard().hasFiles());
         if (!Clipboard.getSystemClipboard().hasFiles()){
@@ -50,15 +51,15 @@ public class ContextMenuMaker {
 
         return contextMenu;
     }
-    public static ContextMenu getTableViewMenu(File file, TableView tableView, boolean showHidden) {
+    public static ContextMenu getTableViewMenu(File file, TableView tableView, boolean showHidden, Image image) {
         // Create ContextMenu
         ContextMenu contextMenu = new ContextMenu();
 
         MenuItem newFile = new MenuItem("New File");
-        newFile.setOnAction(getNewFileEvent(file, tableView, showHidden));
+        newFile.setOnAction(getNewFileEvent(file, tableView, showHidden, image));
 
         MenuItem paste = new MenuItem("Paste");
-        paste.setOnAction(getPasteEvent(file, tableView, showHidden));
+        paste.setOnAction(getPasteEvent(file, tableView, showHidden, image));
 
         System.out.println(Clipboard.getSystemClipboard().hasFiles());
         if (!Clipboard.getSystemClipboard().hasFiles()){
@@ -83,7 +84,7 @@ public class ContextMenuMaker {
     }
 
 
-    private static EventHandler<ActionEvent> getPasteEvent(File file, TableView tableView, boolean showHidden){
+    private static EventHandler<ActionEvent> getPasteEvent(File file, TableView tableView, boolean showHidden, Image image){
         return new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -92,7 +93,7 @@ public class ContextMenuMaker {
                     System.out.println(tempFile);
 
                     ContextMenuHandler.createCopyAtFileDirectory(tempFile, file);
-                    refreshTableView(file, tableView, showHidden);
+                    refreshTableView(file, tableView, showHidden, image);
 
                 }
                 };
@@ -118,14 +119,14 @@ public class ContextMenuMaker {
             }
         };
     }
-    private static EventHandler<ActionEvent> getRenameEvent(File file, TableView tableView, boolean showHidden){
+    private static EventHandler<ActionEvent> getRenameEvent(File file, TableView tableView, boolean showHidden, Image image){
         return new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
                 Runnable runnableTask = () -> {
                     File newFile = ContextMenuHandler.renameFile(file);
-                    refreshTableView(newFile.getParentFile(), tableView, showHidden);
+                    refreshTableView(newFile.getParentFile(), tableView, showHidden, image);
                 };
                 Platform.runLater(runnableTask);
             }
@@ -145,13 +146,13 @@ public class ContextMenuMaker {
             }
         };
     }
-    private static EventHandler<ActionEvent> getNewFileEvent(File file, TableView tableView, boolean showHidden){
+    private static EventHandler<ActionEvent> getNewFileEvent(File file, TableView tableView, boolean showHidden, Image image){
         return new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 Runnable runnableTask = () -> {
                     ContextMenuHandler.newFileDialogue(file);
-                    refreshTableView(file, tableView, showHidden);
+                    refreshTableView(file, tableView, showHidden, image);
                 };
                 Platform.runLater(runnableTask);
             }
@@ -171,14 +172,14 @@ public class ContextMenuMaker {
             }
         };
     }
-    private static EventHandler<ActionEvent> getDeleteEvent(File file, TableView tableView, boolean showHidden){
+    private static EventHandler<ActionEvent> getDeleteEvent(File file, TableView tableView, boolean showHidden, Image image){
         return new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 Runnable runnableTask = () -> {
                     File parent = file.getParentFile();
                     ContextMenuHandler.deleteFile(file);
-                    refreshTableView(parent, tableView, showHidden);
+                    refreshTableView(parent, tableView, showHidden, image);
                 };
                 Platform.runLater(runnableTask);
             }
