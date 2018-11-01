@@ -102,6 +102,7 @@
 	-fx-text-inner-color: -fx-text-base-color;
 
 	-dark: rgb(47.0, 52.0, 57.0);
+	-dark-menu: rgba(47.0, 52.0, 57.0, 0.95);
 	-fx-background-color: -dark;
 	/*default font */
 	-fx-font-family: 'Roboto Medium';
@@ -111,6 +112,7 @@
 	-swatch-grey: rgb(200.0, 200.0, 200.0);
 	/*-swatch-dark-grey: #424242;*/
 	-swatch-dark-grey: #373d44;
+	-swatch-darky-grey: #3b4249;
 	/*-swatch-darker-grey: #333333;*/
 	-swatch-darker-grey: #2f3235;
 	-swatch-light-grey: rgb(230.0, 230.0, 230.0);
@@ -148,6 +150,8 @@
 	-fx-background-color: -dark;
 	-fx-border-color: -dark;
 }
+
+
 
 
 /*******************************************************************************
@@ -348,8 +352,13 @@
  *                                                                             *
  ******************************************************************************/
 .context-menu {
-	-fx-background-color: rgba(255.0, 255.0, 255.0, 0.95);
+	/*-fx-background-color: rgba(255.0, 255.0, 255.0, 0.95);*/
+	-fx-background-color: -dark-menu;
 	-fx-background-radius: 2.0;
+}
+
+.menu-item:focused {
+	-fx-background-color: -swatch-dark-grey;
 }
 
 .radio-menu-item, .check-menu-item {
@@ -724,6 +733,7 @@
 	/* Constants used throughout the tableview. */
 	-fx-table-header-border-color: transparent;
 	-fx-table-cell-border-color: -fx-box-border; /* Horizontal Lines*/
+	-fx-alternative-row-fill-visible: true;
 	-fx-background-color: -swatch-darker-grey;
 }
 
@@ -756,8 +766,16 @@
 	-fx-background-color: transparent;
 }
 
-.table-row-cell, .tree-table-row-cell {
+.table-row-cell:even, .tree-table-row-cell {
 	-fx-cell-size: 40px;
+	-fx-background-color: -swatch-dark-grey;
+	/*-fx-border-color: -swatch-darker-grey;*/
+}
+.table-row-cell:odd {
+	-fx-cell-size: 40px;
+	-fx-background-color: -swatch-darky-grey;
+	/*-fx-border-color: -swatch-darker-grey;*/
+
 }
 
 .table-cell {
@@ -765,10 +783,6 @@
 
 	-fx-border-width: 1;
 }
-.table-row-cell {
-	-fx-background-color: -swatch-dark-grey;
-}
-
 
 /*******************************************************************************
  *                                                                             *
