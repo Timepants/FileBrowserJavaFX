@@ -3,8 +3,9 @@
 /home/timepants/IdeaProjects/bowser/src/main/java/ui/Controller.java
 /home/timepants/IdeaProjects/bowser/src/main/java/ui/components/ContextMenuHandler.java
 /home/timepants/IdeaProjects/bowser/src/main/java/ui/components/ContextMenuMaker.java
-/home/timepants/IdeaProjects/bowser/src/main/java/ui/HelloFX.java
 /home/timepants/IdeaProjects/bowser/src/main/java/util/MD5Checksum.java
 /home/timepants/IdeaProjects/bowser/src/main/java/ui/components/SimpleFile.java
 /home/timepants/IdeaProjects/bowser/src/main/java/ui/components/FXDialogue.java
 /home/timepants/IdeaProjects/bowser/src/main/java/ui/components/SimpleDirectoryTreeItem.java
+/home/timepants/IdeaProjects/bowser/src/main/java/util/Finder.java
+/home/timepants/IdeaProjects/bowser/src/main/java/util/Searcher.java
