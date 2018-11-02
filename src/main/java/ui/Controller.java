@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import ui.components.ContextMenuMaker;
+import ui.components.FXDialogue;
 import ui.components.SimpleDirectoryTreeItem;
 import ui.components.SimpleFile;
 import util.Finder;
@@ -75,10 +76,12 @@ public class Controller {
             setImageGroup(true);
             stylesheets.remove(lightTheme);
             stylesheets.add(darkTheme);
+            FXDialogue.setIsDarkMode(true);
         } else {
             setImageGroup(false);
             stylesheets.remove(darkTheme);
             stylesheets.add(lightTheme);
+            FXDialogue.setIsDarkMode(false);
         }
         changeTree(treeView.getRoot().getValue().getAbsolutePath());
     }
