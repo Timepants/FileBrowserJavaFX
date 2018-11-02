@@ -161,7 +161,7 @@ public class Controller {
         if(mouseEvent.getClickCount() == 2)
             {
                 if (tableView.getSelectionModel().getSelectedItem().isDirectory()){
-                    changeTree(tableView.getSelectionModel().getSelectedItem().getParentFile().getAbsolutePath());
+                    changeTree(tableView.getSelectionModel().getSelectedItem().getAbsolutePath());
                 } else {
                     openFile(tableView.getSelectionModel().getSelectedItem());
                 }
