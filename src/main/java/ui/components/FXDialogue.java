@@ -19,28 +19,35 @@ import java.util.Optional;
 import java.util.concurrent.*;
 
 public class FXDialogue {
+    private static boolean isDarkMode = false;
+    public static void setIsDarkMode(boolean isDarkMode){
+        FXDialogue.isDarkMode = isDarkMode;
+    }
+
     public static void showInformation(String header, String message) {
         showInformation("Information", header, message);
     }
 
     public static void addStyle(Alert alert){
-        DialogPane dialogPane = alert.getDialogPane();
-        try {
-            dialogPane.getStylesheets().add(new File("src/main/java/ui/resources/css/material-fx-v0_3.css").toURI().toURL().toString());
-            dialogPane.getStyleClass().add("material-fx-v0_3");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        addStyle(alert.getDialogPane());
 
     }
-    public static void addStyle(Dialog dialog){
-        DialogPane dialogPane = dialog.getDialogPane();
+    public static void addStyle(DialogPane dialogPane){
         try {
-            dialogPane.getStylesheets().add(new File("src/main/java/ui/resources/css/material-fx-v0_3.css").toURI().toURL().toString());
-            dialogPane.getStyleClass().add("material-fx-v0_3");
+            if(isDarkMode){
+                dialogPane.getStylesheets().add(new File("src/main/java/ui/resources/css/material-fx-v0_3.css").toURI().toURL().toString());
+                dialogPane.getStyleClass().add("alert-box");
+            } else {
+                dialogPane.getStylesheets().add(new File("src/main/java/ui/resources/css/material-fx-v0_3-copy.css").toURI().toURL().toString());
+                dialogPane.getStyleClass().add("alert-box");
+            }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+    public static void addStyle(Dialog dialog){
+        addStyle(dialog.getDialogPane());
+
 
     }
 

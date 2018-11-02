@@ -152,8 +152,12 @@
 }
 
 
-
-
+.alert-box{
+	-fx-background-color: -swatch-darker-grey;
+}
+.alert-box:header .header-panel {
+	-fx-background-color: -dark;
+}
 /*******************************************************************************
  *                                                                             *
  * Material Design - Cards 				                       				   *

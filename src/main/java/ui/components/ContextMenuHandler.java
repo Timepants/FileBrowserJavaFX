@@ -12,11 +12,13 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 public class ContextMenuHandler {
-    public static void showMD5Checksum(File file){
-                try {
+    public static void showMD5Checksum(File file) {
+        try {
             FXDialogue.showInformation("MD5 Checksum"
-                    ,"Checksum for " + file.getName()
+                    , "Checksum for " + file.getName()
                     , MD5Checksum.getCheckSum(file));
         } catch (IOException e) {
             e.printStackTrace();
@@ -24,57 +26,104 @@ public class ContextMenuHandler {
             e.printStackTrace();
         }
     }
-    public static File renameFile(File file){
+
+    public static File renameFile(File file) {
         String newName = FXDialogue.showTextInput("Rename File"
-                ,"Rename file"
+                , "Rename file"
                 , "Please enter the new name"
                 , file.getName());
         System.out.println(newName);
-        Path source = Path.of(file.toURI());
-        try {
-            source = Files.move(source, source.resolveSibling(newName));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return source.toFile();
+
+        return doRename(newName, file, false);
+
+
     }
-    public static void newFileDialogue(File file){
+    private static File doRename(String newName, File file, boolean overwrite){
+        if (newName != null) {
+            Path source = Path.of(file.toURI());
+            try {
+                if(overwrite){
+                    source = Files.move(source, source.resolveSibling(newName), REPLACE_EXISTING);
+                }else{
+                    source = Files.move(source, source.resolveSibling(newName));
+                }
+            }catch (FileAlreadyExistsException e1){
+                return overwriteRename(newName,file);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            return source.toFile();
+        }
+        return null;
+    }
+    public static File overwriteRename(String newName, File newFile) {
+        String buttonResult = FXDialogue.showConfirm("File Already Exists"
+                , "Overwrite File:\n\""+newFile.getName()+"\""
+                , "This file already exists, would \nyou like to overwrite it?");
+
+        if (buttonResult.equals(FXDialogue.OK)) {
+            return doRename(newName, newFile, true);
+        }
+        return null;
+    }
+
+
+
+    public static void newFileDialogue(File file) {
         String newName = FXDialogue.showTextInput("New File"
-                ,"Create new file"
+                , "Create new file"
                 , "Please enter the file name"
                 , "");
-        addFileAtCurrentDirectory(file, newName, false);
+        if (newName != null)
+            addFileAtCurrentDirectory(file, newName, false);
 
     }
-    public static void newDirectoryDialogue(File file){
+
+    public static void newDirectoryDialogue(File file) {
         String newName = FXDialogue.showTextInput("New Folder"
-                ,"Create new folder"
+                , "Create new folder"
                 , "Please enter the folder name"
                 , "");
-        addFileAtCurrentDirectory(file, newName, true);
+        if (newName != null)
+            addFileAtCurrentDirectory(file, newName, true);
 
     }
-    public static void deleteFile(File file){
+
+    public static void deleteFile(File file) {
         String buttonResult = FXDialogue.showConfirm("Delete"
-                ,"Would you like to delete this file?"
-                , file.getName());;
+                , "Would you like to delete this file?"
+                , file.getName());
+        ;
         Path source = Path.of(file.toURI());
-        if (buttonResult.equals(FXDialogue.OK)){
+        if (buttonResult.equals(FXDialogue.OK)) {
             try {
 
-                    Files.delete(source);
+                Files.delete(source);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-    public static void deleteDirectory(File file){
+
+    public static void overWrite(File newFile, File directory) {
+        String buttonResult = FXDialogue.showConfirm("File Already Exists"
+                , "Overwrite File:\n\""+newFile.getName()+"\""
+                , "This file already exists, would \nyou like to overwrite it?");
+
+        if (buttonResult.equals(FXDialogue.OK)) {
+            createCopyAtFileDirectory(newFile, directory, true);
+        }
+    }
+
+    public static void deleteDirectory(File file) {
         String buttonResult = FXDialogue.showConfirm("Delete"
-                ,"Would you like to delete this directory?"
-                , file.getName());;
+                , "Would you like to delete this directory?"
+                , file.getName());
+        ;
         Path source = Path.of(file.toURI());
-        if (buttonResult.equals(FXDialogue.OK)){
+        if (buttonResult.equals(FXDialogue.OK)) {
             try {
 
                 Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
@@ -97,7 +146,8 @@ public class ContextMenuHandler {
             }
         }
     }
-    public static void addFileAtCurrentDirectory(File file, String newName, boolean isDirectory){
+
+    public static void addFileAtCurrentDirectory(File file, String newName, boolean isDirectory) {
         Path newFilePath = null;
         int count = 0;
         boolean flag = true;
@@ -115,7 +165,7 @@ public class ContextMenuHandler {
                     builder.append(newName.substring(newName.lastIndexOf("."), newName.length()));
                     newFilePath = Paths.get(builder.toString());
                 }
-                if (!isDirectory){
+                if (!isDirectory) {
                     Files.createFile(newFilePath);
                 } else {
                     System.out.println("Creating a directory");
@@ -130,24 +180,32 @@ public class ContextMenuHandler {
             }
         }
     }
-    public static void createCopyAtFileDirectory(File newFile, File directory){
-        if (newFile != null) {
-            try {
-                String destination = directory.getAbsolutePath() + "/" + newFile.getName();
-                System.out.println("newFile: " + newFile.getAbsolutePath());
-                System.out.println("destination: " + destination);
 
-                Files.copy(Paths.get(newFile.getAbsolutePath()),
-                        Paths.get(destination));
-                if (newFile.isDirectory()) {
-                    for (File temp : newFile.listFiles()) {
-                        createCopyAtFileDirectory(temp, new File(destination));
-                    }
+    public static void createCopyAtFileDirectory(File newFile, File directory, boolean overwrite) {
+        if (newFile != null) {
+
+            String destination = directory.getAbsolutePath() + "/" + newFile.getName();
+            System.out.println("newFile: " + newFile.getAbsolutePath());
+            System.out.println("destination: " + destination);
+            try {
+                if(overwrite){
+                    Files.copy(Paths.get(newFile.getAbsolutePath()),
+                            Paths.get(destination), REPLACE_EXISTING);
+                } else {
+                    Files.copy(Paths.get(newFile.getAbsolutePath()),
+                            Paths.get(destination));
                 }
+            } catch (FileAlreadyExistsException e1) {
+                overWrite(newFile, directory);
             } catch (IOException e) {
-                //TODO overwrite dialogue
                 e.printStackTrace();
             }
+            if (newFile.isDirectory()) {
+                for (File temp : newFile.listFiles()) {
+                    createCopyAtFileDirectory(temp, new File(destination), false);
+                }
+            }
+
         }
     }
 

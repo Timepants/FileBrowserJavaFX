@@ -92,7 +92,7 @@ public class ContextMenuMaker {
                 for (File tempFile : Clipboard.getSystemClipboard().getFiles()){
                     System.out.println(tempFile);
 
-                    ContextMenuHandler.createCopyAtFileDirectory(tempFile, file);
+                    ContextMenuHandler.createCopyAtFileDirectory(tempFile, file, false);
                     refreshTableView(file, tableView, showHidden, image);
 
                 }
@@ -110,7 +110,7 @@ public class ContextMenuMaker {
                     for (File tempFile : Clipboard.getSystemClipboard().getFiles()){
                         System.out.println(tempFile);
 
-                        ContextMenuHandler.createCopyAtFileDirectory(tempFile, file);
+                        ContextMenuHandler.createCopyAtFileDirectory(tempFile, file, false);
                         TreeItem<File> item = treeView.getRoot();
                         treeView.setRoot(new SimpleDirectoryTreeItem(item.getValue(), (ImageView) item.getGraphic(), showHidden));
                     }
@@ -126,7 +126,9 @@ public class ContextMenuMaker {
             public void handle(ActionEvent event) {
                 Runnable runnableTask = () -> {
                     File newFile = ContextMenuHandler.renameFile(file);
-                    refreshTableView(newFile.getParentFile(), tableView, showHidden, image);
+                    if (newFile!=null){
+                        refreshTableView(newFile.getParentFile(), tableView, showHidden, image);
+                    }
                 };
                 Platform.runLater(runnableTask);
             }
@@ -139,8 +141,10 @@ public class ContextMenuMaker {
             public void handle(ActionEvent event) {
                 Runnable runnableTask = () -> {
                     File newFile = ContextMenuHandler.renameFile(file);
-                    TreeItem<File> item = treeView.getRoot();
-                    treeView.setRoot(new SimpleDirectoryTreeItem(item.getValue(), (ImageView) item.getGraphic(), showHidden));
+                    if(newFile!=null) {
+                        TreeItem<File> item = treeView.getRoot();
+                        treeView.setRoot(new SimpleDirectoryTreeItem(item.getValue(), (ImageView) item.getGraphic(), showHidden));
+                    }
                 };
                 Platform.runLater(runnableTask);
             }
