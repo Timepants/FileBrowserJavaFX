@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -31,10 +32,10 @@ public class Main extends Application {
 //        root.getStylesheets().add("src/main/java/ui/resources/css/material-fx-v0_3.css");
 
         stage.setScene(new Scene(root));
-        stage.setTitle("Bowser Browser");
+        stage.setTitle("Wowzer Browser");
         stage.setMinWidth(660);
 //        stage.initStyle(StageStyle.TRANSPARENT);
-//        stage.getIcons().add(new Image(getClass().getResourceAsStream("myIcon.png")));
+        stage.getIcons().add(new Image(new File("src/main/java/ui/resources/img/mainLogo.png").toURI().toString()));
         stage.show();
     }
 
